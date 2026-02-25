@@ -1,0 +1,106 @@
+{% extends 'comunidad/base.html' %}
+
+{% block content %}
+<div class="row align-items-center mb-4">
+    <div class="col-md-7">
+        <h2 class="fw-bold m-0"><i class="bi bi-houses-fill text-primary"></i> Muro Comunitario</h2>
+        <p class="text-muted mb-0">Explora los saberes y oficios del territorio.</p>
+    </div>
+    
+    <div class="col-md-5 mt-3 mt-md-0">
+        <form method="GET" action="{% url 'muro' %}" class="input-group shadow-sm">
+            <input type="text" id="input-buscador" name="q" class="form-control" placeholder="¿Qué ayuda buscas?" value="{{ query|default:'' }}">
+            <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
+            {% if query %}
+                <a href="{% url 'muro' %}" class="btn btn-outline-secondary"><i class="bi bi-x-lg"></i></a>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+{% if agradecimientos %}
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="p-3 p-md-4 bg-light rounded-4 border-start border-4 border-primary shadow-sm">
+            <h5 class="fw-bold text-primary mb-3">
+                <i class="bi bi-chat-heart-fill me-2"></i> La voz del barrio
+            </h5>
+            <div class="d-flex flex-nowrap overflow-auto pb-3" style="scrollbar-width: thin; -webkit-overflow-scrolling: touch; gap: 1rem;">
+                {% for agra in agradecimientos %}
+                <div style="min-width: 280px; max-width: 320px;">
+                    <div class="card h-100 border-0 shadow-sm bg-white">
+                        <div class="card-body p-3 d-flex flex-column">
+                            <p class="fst-italic small mb-2 text-dark">"{{ agra.comentario_gratitud }}"</p>
+                            <div class="d-flex align-items-center mt-auto">
+                                <div class="bg-success-subtle text-success rounded-circle p-1 me-2" style="font-size: 0.7rem;">
+                                    <i class="bi bi-heart-fill"></i>
+                                </div>
+                                <small class="text-muted">
+                                    <strong>{{ agra.solicitante.username }}</strong> agradeció a 
+                                    <span class="text-primary">{{ agra.habilidad.ofertante.username }}</span>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="contenedor-habilidades">
+    {% for habilidad in habilidades %}
+    <div class="col tarjeta-habilidad">
+        <div class="card h-100 shadow-sm border-0 overflow-hidden">
+            
+            {% if habilidad.imagen %}
+                <img src="{{ habilidad.imagen.url }}" class="card-img-top" alt="{{ habilidad.titulo }}" style="height: 200px; object-fit: cover;">
+            {% else %}
+                <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <i class="bi bi-image text-muted display-1"></i>
+                </div>
+            {% endif %}
+
+            <div class="card-body d-flex flex-column">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h5 class="card-title text-capitalize m-0 fw-bold">{{ habilidad.titulo }}</h5>
+                    <span class="badge bg-info text-dark">{{ habilidad.categoria }}</span>
+                </div>
+                <p class="card-text text-secondary small mb-4">{{ habilidad.descripcion|truncatewords:20 }}</p>
+
+                <div class="mt-auto">
+                    <hr>
+                    {% if user.is_authenticated %}
+                        {% if user != habilidad.ofertante %}
+                            <a href="{% url 'solicitar_intercambio' habilidad.id %}" class="btn btn-primary w-100 shadow-sm">
+                                <i class="bi bi-hand-index-thumb me-1"></i> Solicitar Ayuda
+                            </a>
+                        {% else %}
+                            <div class="alert alert-light py-1 text-center m-0 border small">
+                                <i class="bi bi-person-check"></i> Es tu publicación
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-outline-secondary btn-sm w-100">Inicia sesión</a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card-footer bg-white border-0 pb-3 pt-0">
+                <div class="d-flex align-items-center justify-content-between">
+                    <small class="text-muted"><i class="bi bi-person-circle"></i> {{ habilidad.ofertante.username }}</small>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12 text-center py-5">
+        <h4 class="text-muted">Aún no hay habilidades publicadas.</h4>
+        <p>Sé el primero en ofrecer tu ayuda al barrio.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

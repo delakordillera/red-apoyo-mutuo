@@ -1,0 +1,13 @@
+# Entorno virtual
+env/
+venv/
+
+# Base de datos local
+db.sqlite3
+
+# Archivos compilados de Python
+__pycache__/
+*.pyc
+
+# Archivos multimedia subidos por usuarios locales
+media/

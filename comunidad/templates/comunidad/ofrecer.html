@@ -1,0 +1,35 @@
+{% extends 'comunidad/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h3 class="fw-bold mb-3">
+                    <i class="bi bi-plus-circle-fill text-success me-2"></i>Ofrecer una Habilidad
+                </h3>
+                <p class="text-muted">Describe qué puedes aportar a la comunidad. Una imagen ayudará a generar más confianza entre tus vecinxs.</p>
+                
+                <hr>
+
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        {{ form.as_p }}
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg shadow-sm">
+                            <i class="bi bi-cloud-arrow-up-fill me-1"></i> Publicar en el Muro
+                        </button>
+                        <a href="{% url 'muro' %}" class="btn btn-link text-secondary btn-sm text-decoration-none">
+                            Volver al muro
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
